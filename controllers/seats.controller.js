@@ -1,8 +1,8 @@
-const Concert = require('../models/concert.model');
+const Seat = require('../models/seat.model');
 
 exports.getAll = async (req, res) => {
   try {
-    res.json(await Concert.find());
+    res.json(await Seat.find());
   }
   catch(err) {
     res.status(500).json({ message: err });
@@ -11,9 +11,9 @@ exports.getAll = async (req, res) => {
 
 exports.getRandom = async (req, res) => {
   try {
-    const count = await Concert.countDocuments();
+    const count = await Seat.countDocuments();
     const rand = Math.floor(Math.random() * count);
-    const dep = await Concert.findOne().skip(rand);
+    const dep = await Seat.findOne().skip(rand);
     if(!dep) res.status(404).json({ message: 'Not found' });
     else res.json(dep);
   }
@@ -24,7 +24,7 @@ exports.getRandom = async (req, res) => {
 
 exports.getOne = async (req, res) => {
   try {
-    const dep = await Concert.findById(req.params.id);
+    const dep = await Seat.findById(req.params.id);
     if(!dep) res.status(404).json({ message: 'Not found' });
     else res.json(dep);
   }
@@ -35,9 +35,9 @@ exports.getOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const { name } = req.body; //wyciągnięcie parametry do stałej name
-    const newConcert = new Concert({ name: name }); //tworzy nowy dokument na bazie modelu concert
-    await newConcert.save(); //zapis do kolekcji 
+    const { day, seat, client, email } = req.body; //wyciągnięcie parametry do stałej name
+    const newSeat = new Seat({ day: day, seat: seat, client: client, email: email }); //tworzy nowy dokument na bazie modelu Seat
+    await newSeat.save(); //zapis do kolekcji 
     res.json({ message: 'OK' }); // jeżeli nie otrzyma błędu zwraca 
   } catch(err) {
     res.status(500).json({ message: err });
@@ -45,11 +45,11 @@ exports.create = async (req, res) => {
 };
 
 exports.changeOne = async (req, res) => {
-  const { performer, genre, price, day, image } = req.body;
+  const { day, seat, client, email } = req.body;
   try {
-    const dep = await Concert.findById(req.params.id);
+    const dep = await Seat.findById(req.params.id);
     if(dep) {
-      await Concert.updateOne({ _id: req.params.id }, { $set: { performer: performer, genre: genre, price: price, day: day, image: image}});
+      await Seat.updateOne({ _id: req.params.id }, { $set: { day: day, seat: seat, client: client, email: email}});
       res.json({ message: 'OK' + dep });
     }
     else res.status(404).json({ message: 'Not found...' });
@@ -61,9 +61,9 @@ exports.changeOne = async (req, res) => {
 
 exports.deleteOne = async (req, res) => {
   try {
-    const concert = await(Concert.findById(req.params.id));
-    if(concert) {
-      await Concert.deleteOne({ _id: req.params.id});
+    const Seat = await(Seat.findById(req.params.id));
+    if(Seat) {
+      await Seat.deleteOne({ _id: req.params.id});
       res.json({ message: 'OK' });
     } else res.status(404).json({ message: 'Not found...' });
   }
